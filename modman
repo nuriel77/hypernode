@@ -1,0 +1,3 @@
+# Comments are supported, begin a line with a hash
+code/Hypernode             app/code/community/Byte/Hypernode
+Byte_Hypernode.xml         app/etc/modules/Byte_Hypernode.xml 

@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Byte_Hypernode>
+            <version>0.3.0</version>
+        </Byte_Hypernode>
+    </modules>
+    <frontend>
+        <routers>
+            <hypernode>
+                <use>standard</use>
+                <args>
+                    <module>Byte_Hypernode</module>
+                    <frontName>hypernode</frontName>
+                </args>
+            </hypernode>
+        </routers>
+    </frontend>
+    <global>
+        <models>
+            <hypernode>
+                <class>Byte_Hypernode_Model</class>
+                <resourceModel>hypernode_mysql4</resourceModel>
+            </hypernode>
+        </models>
+        <helpers>
+            <hypernode>
+                <class>Byte_Hypernode_Helper</class>
+            </hypernode>
+        </helpers>
+        <cache>
+            <types>
+                <hypernode translate="label,description" module="hypernode">
+                    <label>Hypernode</label>
+                    <description>Full page cache in Hypernode</description>
+                    <tags></tags>
+                </hypernode>
+            </types>
+        </cache>
+        <events>
+            <admin_session_user_login_success>
+                <observers>
+                    <hypernode>
+                        <type>singleton</type>
+                        <class>hypernode/observer</class>
+                        <method>hypernode</method>
+                    </hypernode>
+                </observers>
+            </admin_session_user_login_success>
+            <http_response_send_before>
+                <observers>
+                    <hypernode>
+                        <type>singleton</type>
+                        <class>hypernode/observer</class>
+                        <method>hypernode</method>
+                    </hypernode>
+                </observers>
+            </http_response_send_before>
+            <application_clean_cache>
+                <observers>
+                    <hypernode>
+                        <type>singleton</type>
+                        <class>hypernode/observer</class>
+                        <method>purgeCache</method>
+                    </hypernode>
+                </observers>
+            </application_clean_cache>
+            <!-- To check if category is in navigation to let admin users know that hypernode cache needs 
+            to be revalidated -->
+            <catalog_category_save_commit_after>
+                <observers>
+                    <hypernode>
+                        <type>singleton</type>
+                        <class>hypernode/observer</class>
+                        <method>onCategorySave</method>
+                    </hypernode>
+                </observers>
+            </catalog_category_save_commit_after>
+        </events>
+    </global>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <hypernode before="Mage_Adminhtml">Byte_Hypernode</hypernode>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+
+    <default>
+        <hypernode>
+            <server_options>
+                <servers>127.0.0.1:80</servers>
+            </server_options>
+        </hypernode>
+    </default>
+
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <hypernode>
+                            <title>Hypernode</title>
+                            <sort_order>10</sort_order>
+                        </hypernode>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <hypernode>
+                                            <title>Hypernode Options</title>
+                                        </hypernode>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+</config>

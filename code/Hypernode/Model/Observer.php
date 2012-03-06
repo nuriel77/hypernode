@@ -19,6 +19,10 @@ class Byte_Hypernode_Model_Observer {
          * The three fields operate independently, so we don't need special if, then, else, etc.
          */
 
+        if ( ! Mage::app()->useCache('hypernode')) {
+            return false;
+        }
+
         $event = $observer->getEvent();
         $helper = Mage::helper('hypernode/cacheable'); /* @var $helper Byte_Hypernode_Model_Cacheable */
 

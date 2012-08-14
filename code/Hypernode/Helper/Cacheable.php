@@ -204,12 +204,14 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
     // Has the admin excluded this page in the backend?
     public function isExcludedPage()
     {
-        $helper     = Mage::helper('hypernode/data');
-        $excluded   = $helper->getExcludedURLs();
-        $currentURL = parse_url(Mage::helper('core/url')->getCurrentURL(), PHP_URL_PATH);
+        $url         = Mage::helper('core/url')->getCurrentURL();
+        $helper      = Mage::helper('hypernode/data');
+        $excluded    = $helper->getExcludedURLs();
+        $currentURL  = parse_url($url, PHP_URL_PATH);
+        $queryString = parse_url($url, PHP_URL_QUERY); 
 
         foreach ($excluded as $pattern) {
-            if(preg_match("!$pattern!", $currentURL)) {
+            if(preg_match("!$pattern!", $currentURL) or preg_match("!$pattern!", $queryString)) {
                 return true;
             }
         }
@@ -236,6 +238,7 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
                                     "controller: " .    $this->getControllerName(),
                                     "route: " .         $this->getRouteName(),
                                     "action: " .        $this->getActionName(),
+                                    "excluded: " .     ($this->isExcludedPage() ? "true" : "false"),
                                     "isadminlogin: " . ($this->isAdminLoggedIn() ? "true" : "false"),
                                     "iscustlogin: " .  ($this->isCustomerLoggedIn() ? "true" : "false")
                             )

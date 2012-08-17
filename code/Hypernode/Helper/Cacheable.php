@@ -210,8 +210,17 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
         $currentURL  = parse_url($url, PHP_URL_PATH);
         $queryString = parse_url($url, PHP_URL_QUERY); 
 
-        foreach ($excluded as $pattern) {
-            if(preg_match("!$pattern!", $currentURL) or preg_match("!$pattern!", $queryString)) {
+		// Allard, your solution was ok, maybe we should add another "text area" for the user
+		// to also include specific regex only for the GET params (in the future we could do that)
+		// For now I wasn't sure what you meant, if to add now the question mark '?' or not.
+		// For now I did not, so this just adds the url + query string
+		// --> remove comments when read.
+		$combined_url = $currentURL . $queryString;
+		Mage::Log('Combined url is: ' . $combined_url );  
+ 
+       foreach ($excluded as $pattern) {
+//            if(preg_match("!$pattern!", $currentURL) or preg_match("!$pattern!", $queryString)) {
+            if(preg_match("!$pattern!", $combined_url)) {
                 return true;
             }
         }

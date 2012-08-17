@@ -17,7 +17,6 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return array
      */
-
     public function getExcludedURLs()
     {
         $excludeConfig = Mage::getStoreConfig('hypernode/excludes/exclude');

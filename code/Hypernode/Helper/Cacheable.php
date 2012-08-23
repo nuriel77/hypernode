@@ -5,6 +5,8 @@
 class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
 {
 
+	const HYPERNODE_DATA = 'hypernode/data';
+
     private $_routeName;
     private $_controllerName;
     private $_actionName;
@@ -122,21 +124,21 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
 
     public function isCheckoutPage() {
         if (substr($this->getControllerName(), 0, 8) === "checkout")
-            Mage::log("This is a checkout page");
+            //Mage::log("This is a checkout page");
 
         return $this->getControllerName() === "checkout_cart";
     }
 
     public function isProductPage() {
         if ($this->getControllerName() === "product")
-            Mage::log("This is a product page");
+            //Mage::log("This is a product page");
 
         return $this->getControllerName() === "product";
     }
 
     public function isCategoryPage() {
         if ($this->getControllerName() === "category")
-            Mage::log("This is a category page");
+            //Mage::log("This is a category page");
 
         return $this->getControllerName() === "category";
     }
@@ -144,7 +146,7 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
     // includes frontpage
     public function isCMSPage() {
         if ($this->getRouteName() === "cms")
-           Mage::log("This is a CMS page");
+           //Mage::log("This is a CMS page");
 
         return $this->getRouteName() === "cms";
     }
@@ -152,7 +154,7 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
     // includes blog
     public function isBlogPage() {
         if ($this->getRouteName() === "blog")
-            Mage::log("This is a blog page");
+            //Mage::log("This is a blog page");
 
         return $this->getRouteName() === "blog";
     }
@@ -205,22 +207,13 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
     public function isExcludedPage()
     {
         $url         = Mage::helper('core/url')->getCurrentURL();
-        $helper      = Mage::helper('hypernode/data');
+        $helper      = Mage::helper(self::HYPERNODE_DATA);
         $excluded    = $helper->getExcludedURLs();
         $currentURL  = parse_url($url, PHP_URL_PATH);
         $queryString = parse_url($url, PHP_URL_QUERY); 
-
-		// Allard, your solution was ok, maybe we should add another "text area" for the user
-		// to also include specific regex only for the GET params (in the future we could do that)
-		// For now I wasn't sure what you meant, if to add now the question mark '?' or not.
-		// For now I did not, so this just adds the url + query string
-		// --> remove comments when read.
-		$combined_url = $currentURL . $queryString;
-		Mage::Log('Combined url is: ' . $combined_url );  
  
-       foreach ($excluded as $pattern) {
-//            if(preg_match("!$pattern!", $currentURL) or preg_match("!$pattern!", $queryString)) {
-            if(preg_match("!$pattern!", $combined_url)) {
+        foreach ($excluded as $pattern) {
+            if(preg_match("!$pattern!", $currentURL) or preg_match("!$pattern!", $queryString)) {
                 return true;
             }
         }
@@ -229,7 +222,26 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
         return false;
     }
 
+	// Has the admin excluded this route in the backend?
+	public function isExcludedRoute()
+	{
+        // Get the current route
+        $myroute    = Mage::app()->getRequest()->getControllerName();
 
+        // Get the excluded routes provided by the user
+        $myhelper   = Mage::helper(self::HYPERNODE_DATA);
+        $myexcluded = $myhelper->getExcludedRoutes();
+
+        // return true if the current route matches any of the admin provided ones
+        foreach ($myexcluded as $route) {
+            if( $route === $myroute ) {
+		        // matched, excluded
+                return true;
+            }
+        }
+        // not matched, not excluded
+		return false;
+	}
 
 
 
@@ -241,6 +253,7 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
         $request  = Mage::app()->getRequest();
         $response = Mage::app()->getResponse();
 
+/*
         Mage::log( implode( ", ",
                             array(  "url: " .           $url->getCurrentUrl(),
                                     "code: " .          $response->getHttpResponseCode(),
@@ -252,6 +265,7 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
                                     "iscustlogin: " .  ($this->isCustomerLoggedIn() ? "true" : "false")
                             )
                           ));
+*/
     }
 
     /**

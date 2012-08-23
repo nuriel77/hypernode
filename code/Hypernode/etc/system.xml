@@ -7,15 +7,14 @@
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
-
             <groups>
                 <excludes translate="label">
-                    <label>Exclude urls</label>
+                    <label>Excluded URLs</label>
                     <sort_order>1</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
-                    <expanded>1</expanded>
+                    <expanded>0</expanded>
                     <fields>
                         <exclude>
                             <label>Excluded URLs</label>
@@ -27,7 +26,7 @@
                             <comment><![CDATA[Specify URLs that you don't want cached.<br/>
 <br/>
 - Enter each pattern on its own line.<br/>
-- You can specify <a href="http://www.php.net/manual/en/reference.pcre.pattern.syntax.php">regular expressions</a>.<br/>
+- You can specify <a target="_blank" href="http://www.php.net/manual/en/reference.pcre.pattern.syntax.php">regular expressions</a>.<br/>
 - Please do not use ! in patterns.<br/>
 - The pattern matches will apply to the complete content of the URL, thus including anything provided after a ?<br/>
 - Flush cache to expunge existing cache objects.</br>
@@ -36,13 +35,38 @@ Example: /(index.php)?/admin/]]></comment>
                         </exclude>
                     </fields>
                 </excludes>
-                <server_options translate="label">
-                    <label>Hypernode server options</label>
+
+                <routes translate="label">
+                    <label>Excluded Routes</label>
                     <sort_order>2</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <expanded>1</expanded>
+                    <fields>
+                        <exclude>
+                            <label>Excluded Routes</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Specify routes that you don't want cached.<br/>
+<br/>
+- Enter each route on its own line.<br/>
+- Information about routes <a target="_blank" href="http://www.magentocommerce.com/knowledge-base/entry/magento-for-dev-part-3-magento-controller-dispatch/">Magento MVC Model</a>.
+<br/>]]></comment>
+                        </exclude>
+                    </fields>
+                </routes>
+
+                <server_options translate="label">
+                    <label>Hypernode server options</label>
+                    <sort_order>3</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>0</expanded>
                     <fields>
                         <servers>
                             <label>Hypernode servers</label>
@@ -56,6 +80,28 @@ Example: /(index.php)?/admin/]]></comment>
                         </servers>
                     </fields>
                 </server_options>
+
+<!--				<cache_time translate="label">
+                    <label>Cache TTL (under Testing)</label>
+                    <sort_order>3</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+					<depends><enabled_yesno><enabled>1</enabled></enabled_yesno></depends>
+                    <fields>
+					 	<ttl translate="label comment">
+                            <label>Default cache TTL</label>
+                            <comment>TTL for cached pages in seconds (e.g. "1800" = page cache is valid for 30 minutes).</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </ttl>
+					</fields>
+				</cache_time>
+-->
             </groups>
         </hypernode>
     </sections>

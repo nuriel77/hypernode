@@ -34,6 +34,27 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Return excluded Routes from configuration
+     *
+     * @return array
+     */
+    public function getExcludedRoutes()
+    {
+        $excludeConfig = Mage::getStoreConfig('hypernode/routes/exclude');
+        $excludeRoutes   = array();
+
+        foreach (explode("\n", $excludeConfig) as $value) {
+
+            // Ensure that is not an empty line
+            if (preg_match('/\S/', $value)) {
+                $excludeRoutes[] = trim($value);
+            }
+        }
+
+        return $excludeRoutes;
+    }
+
+    /**
      * Return hypernode servers from configuration
      * 
      * @return array 
@@ -49,6 +70,19 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $hypernodeServers;
     }
+
+	/* Purge Varnish Cache */
+	public function purgeVarnish()
+	{
+        $ch = curl_init();
+        $timeout = 5;
+        curl_setopt($ch,CURLOPT_URL,'http://localhost/');
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+        curl_setopt($ch,CURLOPT_CUSTOMREQUEST, 'BAN');
+        curl_exec($ch);
+        curl_close($ch);
+	}
 
     /**
      * Purges all cache on all Hypernode servers.
@@ -90,10 +124,15 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
 
         foreach ((array)$hypernodeServers as $hypernodeServer) {
             foreach ($urls as $url) {
-                $urlpath = parse_url($url, PHP_URL_PATH);
-                $urlhost = parse_url($url, PHP_URL_HOST);
-
-                $hypernodeUrl = "http://" . $hypernodeServer . $urlpath;
+				Mage::Log( 'Loop url is: ' . $url ) ; 
+				if ( $url !== '/.*' ){
+	                $urlpath = parse_url($url, PHP_URL_PATH);
+	                $urlhost = parse_url($url, PHP_URL_HOST);
+	
+	                $hypernodeUrl = "http://" . $hypernodeServer . $urlpath;
+				} else {
+					$hypernodeUrl = "http://" . $hypernodeServer . $url;
+				}
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $hypernodeUrl);

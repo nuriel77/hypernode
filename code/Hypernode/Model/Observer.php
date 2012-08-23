@@ -2,6 +2,8 @@
 
 class Byte_Hypernode_Model_Observer {
 
+	const HELPER_CLASS = 'hypernode/cacheable'; 
+	
     /**
      * This method is called when http_response_send_before event is triggered to identify
      * if current page can be cached and set correct cookies for hypernode.
@@ -19,12 +21,16 @@ class Byte_Hypernode_Model_Observer {
          * The three fields operate independently, so we don't need special if, then, else, etc.
          */
 
+		// return if Hypernode is not enabled in Magento
         if ( ! Mage::app()->useCache('hypernode')) {
             return false;
         }
 
         $event = $observer->getEvent();
-        $helper = Mage::helper('hypernode/cacheable'); /* @var $helper Byte_Hypernode_Model_Cacheable */
+		//Mage::Log("Event: ". $event);
+
+		// Instantiate the helper class
+        $helper = Mage::helper(self::HELPER_CLASS); /* @var $helper Byte_Hypernode_Model_Cacheable */
 
         $helper->debugCaching($event);
 
@@ -34,10 +40,11 @@ class Byte_Hypernode_Model_Observer {
             $helper->setUncached();
         }
 
-        // Is this an admin page? Or is it a login action? Or is it a checkout action?
-        if ($helper->isAdminArea() || $helper->isLoginAction() || $helper->isCheckoutPage()) {
-            $helper->setUncached();
-        }
+        // Is this an admin page? Or is it a login action? Or is it a checkout action? -> Added note: Checkout and Adminarea don't cache by default
+    //   if ($helper->isAdminArea() || $helper->isLoginAction() || $helper->isCheckoutPage()) {
+       if ( $helper->isLoginAction()) {
+			$helper->setUncached();
+       }
 
         /*
          * We don't want pages cached when:
@@ -60,7 +67,7 @@ class Byte_Hypernode_Model_Observer {
         }
 
         // Certain pages are whitelisted. They need to pass once without starting a nocache session
-        if ($helper->isExcludedPage()) {
+        if ($helper->isExcludedPage() || $helper->isExcludedRoute()) {
             $helper->setUncached();
             $helper->unsetCacheable();
         }
@@ -85,6 +92,16 @@ class Byte_Hypernode_Model_Observer {
         return $this;
     }
 
+	public function flushHypernode($observer)
+	{
+		Mage::Log( 'We are at flushHypernode!');
+		// If Hypernode is not enabled on admin don't do anything
+        if (!Mage::app()->useCache('hypernode')) {
+            return;
+        }
+		Mage::helper('hypernode')->purgeVarnish();
+	}
+
     /**
      * Listens to application_clean_cache event and gets notified when a product/category/cms 
      * model is saved.
@@ -93,11 +110,12 @@ class Byte_Hypernode_Model_Observer {
      */
     public function purgeCache($observer)
     {
+
         // If Hypernode is not enabled on admin don't do anything
         if (!Mage::app()->useCache('hypernode')) {
             return;
         }
-        
+
         $tags = $observer->getTags();
         $urls = array();
 
@@ -270,3 +288,4 @@ class Byte_Hypernode_Model_Observer {
         }
     }
 }
+

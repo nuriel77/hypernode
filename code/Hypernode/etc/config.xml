@@ -18,6 +18,7 @@
     </frontend>
     <global>
         <models>
+			<backend_model></backend_model>
             <hypernode>
                 <class>Byte_Hypernode_Model</class>
                 <resourceModel>hypernode_mysql4</resourceModel>
@@ -65,6 +66,18 @@
                     </hypernode>
                 </observers>
             </application_clean_cache>
+
+			<!-- Flush cache after admin save config -->
+			<admin_system_config_section_save_after>
+				<observers>
+                    <hypernode>
+                        <type>singleton</type>
+                        <class>hypernode/observer</class>
+                        <method>flushHypernode</method>
+                    </hypernode>
+                </observers>
+			</admin_system_config_section_save_after>
+
             <!-- To check if category is in navigation to let admin users know that hypernode cache needs 
             to be revalidated -->
             <catalog_category_save_commit_after>
@@ -76,6 +89,17 @@
                     </hypernode>
                 </observers>
             </catalog_category_save_commit_after>
+
+<!--			<admin_system_config_changed_section_hypernode>
+                <observers>
+                    <hypernode>
+				        <type>singleton</type>
+				        <class>hypernode/configurator</class>
+				        <method>_afterSave</method> 
+                    </hypernode>
+                </observers>
+			</admin_system_config_changed_section_hypernode>
+-->
         </events>
     </global>
 
@@ -96,6 +120,17 @@
             <server_options>
                 <servers>127.0.0.1:80</servers>
             </server_options>
+            <routes>
+                <exclude>checkout
+customer
+moneybookers
+paypal
+admin
+wishlist</exclude>
+            </routes>
+<!--			<cache_time>
+				<ttl>14400</ttl>
+			</cache_time> -->
         </hypernode>
     </default>
 

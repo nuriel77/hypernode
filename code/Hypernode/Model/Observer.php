@@ -92,14 +92,18 @@ class Byte_Hypernode_Model_Observer {
         return $this;
     }
 
+	/*
+	 *	Sends a signal to Varnish to flush cache
+ 	 */
 	public function flushHypernode($observer)
 	{
-		Mage::Log( 'We are at flushHypernode!');
 		// If Hypernode is not enabled on admin don't do anything
         if (!Mage::app()->useCache('hypernode')) {
             return;
         }
-		Mage::helper('hypernode')->purgeVarnish();
+		if ( Mage::helper('hypernode')->purgeVarnish() ){
+			Mage::getSingleton('adminhtml/session')->addSuccess("The Hypernode/Varnish cache has been purged.");
+		}
 	}
 
     /**

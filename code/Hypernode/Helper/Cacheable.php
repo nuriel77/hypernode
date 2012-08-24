@@ -253,7 +253,6 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
         $request  = Mage::app()->getRequest();
         $response = Mage::app()->getResponse();
 
-/*
         Mage::log( implode( ", ",
                             array(  "url: " .           $url->getCurrentUrl(),
                                     "code: " .          $response->getHttpResponseCode(),
@@ -265,7 +264,7 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
                                     "iscustlogin: " .  ($this->isCustomerLoggedIn() ? "true" : "false")
                             )
                           ));
-*/
+
     }
 
     /**

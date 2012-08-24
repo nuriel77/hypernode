@@ -74,14 +74,26 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
 	/* Purge Varnish Cache */
 	public function purgeVarnish()
 	{
+
+		// Get the current baseUrl
+		$baseUrl = parse_url(  Mage::getBaseUrl() );
+		$myUrl = $baseUrl['scheme'] . '://' . $baseUrl['host'] . '/.*';
+
+		// Here we use Curl to call Varnish 
+		// to purge the provided baseUrl (all content of this
+		//	baseurl will be purged in varnish)
         $ch = curl_init();
-        $timeout = 5;
-        curl_setopt($ch,CURLOPT_URL,'http://localhost/');
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
-        curl_setopt($ch,CURLOPT_CUSTOMREQUEST, 'BAN');
-        curl_exec($ch);
+        curl_setopt($ch,CURLOPT_URL, $myUrl);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch,CURLOPT_CUSTOMREQUEST, 'PURGE');
+		$result = curl_exec($ch);
         curl_close($ch);
+		if ($result) {
+			return true;
+		} else {	
+			return false;
+		}
 	}
 
     /**

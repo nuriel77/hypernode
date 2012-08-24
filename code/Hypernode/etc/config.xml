@@ -90,16 +90,6 @@
                 </observers>
             </catalog_category_save_commit_after>
 
-<!--			<admin_system_config_changed_section_hypernode>
-                <observers>
-                    <hypernode>
-				        <type>singleton</type>
-				        <class>hypernode/configurator</class>
-				        <method>_afterSave</method> 
-                    </hypernode>
-                </observers>
-			</admin_system_config_changed_section_hypernode>
--->
         </events>
     </global>
 

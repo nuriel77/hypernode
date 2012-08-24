@@ -80,28 +80,6 @@ Example: /(index.php)?/admin/]]></comment>
                         </servers>
                     </fields>
                 </server_options>
-
-<!--				<cache_time translate="label">
-                    <label>Cache TTL (under Testing)</label>
-                    <sort_order>3</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <expanded>1</expanded>
-					<depends><enabled_yesno><enabled>1</enabled></enabled_yesno></depends>
-                    <fields>
-					 	<ttl translate="label comment">
-                            <label>Default cache TTL</label>
-                            <comment>TTL for cached pages in seconds (e.g. "1800" = page cache is valid for 30 minutes).</comment>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>1</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </ttl>
-					</fields>
-				</cache_time>
--->
             </groups>
         </hypernode>
     </sections>

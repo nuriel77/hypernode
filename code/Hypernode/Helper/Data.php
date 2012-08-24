@@ -77,13 +77,12 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
 
 		// Get the current baseUrl
 		$baseUrl = parse_url(  Mage::getBaseUrl() );
-		$myUrl = $baseUrl['scheme'] . '://' . $baseUrl['host'] . '/.*';
 
-		// Here we use Curl to call Varnish 
-		// to purge the provided baseUrl (all content of this
-		//	baseurl will be purged in varnish)
+		// Here we use Curl to call Varnish to purge
+		// the given host data.
         $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL, $myUrl);
+        curl_setopt($ch,CURLOPT_URL, 'http://127.0.0.1/.*');
+		curl_setopt($ch,CURLOPT_HTTPHEADER, array('Host: ' . $baseUrl['host']));
         curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ch,CURLOPT_CUSTOMREQUEST, 'PURGE');

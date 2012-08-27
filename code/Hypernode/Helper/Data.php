@@ -6,7 +6,7 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Check if hypernode is enabled in Cache management.
      * 
-     * @return boolean  True if hypernode is enable din Cache management. 
+     * @return boolean  True if hypernode is enabled in Cache management. 
      */
     public function useHypernodeCache(){
         return Mage::app()->useCache('hypernode');
@@ -102,17 +102,17 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function purgeAll()
     {
-    $collection = Mage::getModel("core/store")->getCollection();
-    $urls = Array();
+	    $collection = Mage::getModel("core/store")->getCollection();
+	    $urls = Array();
 
-    foreach ($collection as $store) {
-        $urls[] = $store->getBaseUrl() . ".*";
+	    foreach ($collection as $store) {
+	        $urls[] = $store->getBaseUrl() . ".*";
 
-        # Sometimes we see multiple storefronts with the same frontend URL. We do not need to flush those URLs twice. So uniq and sort.
-        $urls = array_values(array_unique($urls));
-    }
-
-    $this->purge($urls);
+	        # Sometimes we see multiple storefronts with the same frontend URL. We do not need to flush those URLs twice. So uniq and sort.
+	        $urls = array_values(array_unique($urls));
+	    }
+	
+	    $this->purge($urls);
     }
 
     /**
@@ -181,8 +181,8 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
             curl_multi_remove_handle($mh, $ch);
             curl_close($ch);
         }
-        curl_multi_close($mh);
-        
+
+        curl_multi_close($mh);     
         return $errors;
     }
 }

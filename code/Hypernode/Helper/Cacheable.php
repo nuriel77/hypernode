@@ -124,39 +124,29 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
 
     public function isCheckoutPage() {
         if (substr($this->getControllerName(), 0, 8) === "checkout")
-            //Mage::log("This is a checkout page");
-
-        return $this->getControllerName() === "checkout_cart";
+	        return $this->getControllerName() === "checkout_cart";
     }
 
     public function isProductPage() {
         if ($this->getControllerName() === "product")
-            //Mage::log("This is a product page");
-
-        return $this->getControllerName() === "product";
+	        return $this->getControllerName() === "product";
     }
 
     public function isCategoryPage() {
         if ($this->getControllerName() === "category")
-            //Mage::log("This is a category page");
-
-        return $this->getControllerName() === "category";
+	        return $this->getControllerName() === "category";
     }
 
     // includes frontpage
     public function isCMSPage() {
         if ($this->getRouteName() === "cms")
-           //Mage::log("This is a CMS page");
-
-        return $this->getRouteName() === "cms";
+	        return $this->getRouteName() === "cms";
     }
 
     // includes blog
     public function isBlogPage() {
         if ($this->getRouteName() === "blog")
-            //Mage::log("This is a blog page");
-
-        return $this->getRouteName() === "blog";
+	        return $this->getRouteName() === "blog";
     }
 
     /*
@@ -184,7 +174,6 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
     public function quoteHasItems()
     {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
-
         return $quote instanceof Mage_Sales_Model_Quote && $quote->hasItems();
     }
 
@@ -253,15 +242,17 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
         $request  = Mage::app()->getRequest();
         $response = Mage::app()->getResponse();
 
+
         Mage::log( implode( ", ",
-                            array(  "url: " .           $url->getCurrentUrl(),
-                                    "code: " .          $response->getHttpResponseCode(),
-                                    "controller: " .    $this->getControllerName(),
-                                    "route: " .         $this->getRouteName(),
-                                    "action: " .        $this->getActionName(),
-                                    "excluded: " .     ($this->isExcludedPage() ? "true" : "false"),
-                                    "isadminlogin: " . ($this->isAdminLoggedIn() ? "true" : "false"),
-                                    "iscustlogin: " .  ($this->isCustomerLoggedIn() ? "true" : "false")
+                        array( 
+								"url: " .           $url->getCurrentUrl(),
+                                "code: " .          $response->getHttpResponseCode(),
+                                "controller: " .    $this->getControllerName(),
+                                "route: " .         $this->getRouteName(),
+                                "action: " .        $this->getActionName(),
+                                "excluded: " .     ($this->isExcludedPage() ? "true" : "false"),
+                                "isadminlogin: " . ($this->isAdminLoggedIn() ? "true" : "false"),
+                                "iscustlogin: " .  ($this->isCustomerLoggedIn() ? "true" : "false")
                             )
                           ));
 

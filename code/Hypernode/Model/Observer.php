@@ -26,13 +26,15 @@ class Byte_Hypernode_Model_Observer {
             return false;
         }
 
+		// Assign the event object
         $event = $observer->getEvent();
-		//Mage::Log("Event: ". $event);
+
 
 		// Instantiate the helper class
         $helper = Mage::helper(self::HELPER_CLASS); /* @var $helper Byte_Hypernode_Model_Cacheable */
 
-        $helper->debugCaching($event);
+		// Debug
+		// $helper->debugCaching($event);
 
         // Let's start with only caching the frontend of the site
         // If we are not on the frontend of the site, cache nothing
@@ -40,28 +42,28 @@ class Byte_Hypernode_Model_Observer {
             $helper->setUncached();
         }
 
-        // Is this an admin page? Or is it a login action? Or is it a checkout action? -> Added note: Checkout and Adminarea don't cache by default
-    //   if ($helper->isAdminArea() || $helper->isLoginAction() || $helper->isCheckoutPage()) {
+        // Is this an admin page? Or is it a login action? Or is it a checkout action?
+		// -> Added note: Checkout and Adminarea don't cache by default
+  //   if ($helper->isAdminArea() || $helper->isLoginAction() || $helper->isCheckoutPage()) {
        if ( $helper->isLoginAction()) {
 			$helper->setUncached();
        }
-
-        /*
-         * We don't want pages cached when:
-         * - a user is logged in
-         * - a user has quote items (basket)
-         * - a user is comparing items
-         * - is the admin logged in?
-         */
-
+	
+       /*
+        * We don't want pages cached when:
+        * - a user is logged in
+        * - a user has quote items (basket)
+        * - a user is comparing items
+        * - is the admin logged in?
+        */
         if ($helper->isCustomerLoggedIn() || $helper->isAdminLoggedIn() || $helper->quoteHasItems() || $helper->hasCompareItems()) {
             $helper->startUncachedSession();
         } else {
             $helper->stopUncachedSession();
         }
 
-        // Okey, now let's give the signal that certain pages are cacheable, provided other flags are not set
-        // PS: isCMSPage includes frontpage
+        // Let's give the signal that certain pages are cacheable,
+		// provided other flags are not set; PS: isCMSPage includes frontpage
         if ($helper->isProductPage() || $helper->isCategoryPage() || $helper->isCMSPage() || $helper->isBlogPage() ) {
             $helper->setCacheable();
         }
@@ -189,34 +191,35 @@ class Byte_Hypernode_Model_Observer {
 
         $store_ids = $product->getStoreIds();
 
-    foreach ($store_ids as $store_id) {
-        $routePath = 'catalog/product/view';
-        $routeParams['id']  = $product->getId();
-        $routeParams['s']   = $product->getUrlKey();
-        $routeParams['_store'] = (!$store_id ? 1: $store_id);
-        $url = Mage::getUrl($routePath, $routeParams);
-        $urls[] = $url;
+	    foreach ($store_ids as $store_id) {
+	        $routePath = 'catalog/product/view';
+	        $routeParams['id']  = $product->getId();
+	        $routeParams['s']   = $product->getUrlKey();
+	        $routeParams['_store'] = (!$store_id ? 1: $store_id);
+	        $url = Mage::getUrl($routePath, $routeParams);
+	        $urls[] = $url;
+	
+	        // Collect all rewrites
+	        $rewrites = Mage::getModel('core/url_rewrite')->getCollection();
+	        if (!Mage::getConfig('catalog/seo/product_use_categories')) {
+	            $rewrites->getSelect()
+	            ->where("id_path = 'product/{$product->getId()}'");
+	        } else {
+	            // Also show full links with categories
+	            $rewrites->getSelect()
+	            ->where("id_path = 'product/{$product->getId()}' OR id_path like 'product/{$product->getId()}/%'");
+	        }
 
-        // Collect all rewrites
-        $rewrites = Mage::getModel('core/url_rewrite')->getCollection();
-        if (!Mage::getConfig('catalog/seo/product_use_categories')) {
-            $rewrites->getSelect()
-            ->where("id_path = 'product/{$product->getId()}'");
-        } else {
-            // Also show full links with categories
-            $rewrites->getSelect()
-            ->where("id_path = 'product/{$product->getId()}' OR id_path like 'product/{$product->getId()}/%'");
-        }
-        foreach($rewrites as $r) {
-            unset($routeParams);
-            $routePath = '';
-            $routeParams['_direct'] = $r->getRequestPath();
-            $routeParams['_store'] = $r->getStoreId();
-            $url = Mage::getUrl($routePath, $routeParams);
-            $urls[] = $url;
-        }
-    }
-
+	        foreach($rewrites as $r) {
+	            unset($routeParams);
+	            $routePath = '';
+	            $routeParams['_direct'] = $r->getRequestPath();
+	            $routeParams['_store'] = $r->getStoreId();
+	            $url = Mage::getUrl($routePath, $routeParams);
+	            $urls[] = $url;
+	        }
+	    }
+	
         return $urls;
     }
 
@@ -229,28 +232,28 @@ class Byte_Hypernode_Model_Observer {
 
         $store_ids = $category->getStoreIds();
 
-    foreach ($store_ids as $store_id) {
-            $routePath = 'catalog/category/view';
-        $routeParams['id']     = $category->getId();
-        $routeParams['s']      = $category->getUrlKey();
-        $routeParams['_store'] = (!$store_id ? 1: $store_id);
-        $url = Mage::getUrl($routePath, $routeParams);
-        $urls[] = $url;
+	    foreach ($store_ids as $store_id) {
+	        $routePath = 'catalog/category/view';
+	        $routeParams['id']     = $category->getId();
+	        $routeParams['s']      = $category->getUrlKey();
+	        $routeParams['_store'] = (!$store_id ? 1: $store_id);
+	        $url = Mage::getUrl($routePath, $routeParams);
+	        $urls[] = $url;
 
-        // Collect all rewrites
-        $rewrites = Mage::getModel('core/url_rewrite')->getCollection();
-        $rewrites->getSelect()->where("id_path = 'category/{$category->getId()}'");
-        foreach($rewrites as $r) {
-            unset($routeParams);
-            $routePath = '';
-            $routeParams['_direct'] = $r->getRequestPath();
-            $routeParams['_store'] = $store_id; # Default store id is 1
-            $routeParams['_store'] = $r->getStoreId();
-            $routeParams['_nosid'] = True;
-            $url = Mage::getUrl($routePath, $routeParams);
-            $urls[] = $url;
-        }
-    }
+    	    // Collect all rewrites
+	        $rewrites = Mage::getModel('core/url_rewrite')->getCollection();
+	        $rewrites->getSelect()->where("id_path = 'category/{$category->getId()}'");
+	        foreach($rewrites as $r) {
+	            unset($routeParams);
+	            $routePath = '';
+	            $routeParams['_direct'] = $r->getRequestPath();
+	            $routeParams['_store'] = $store_id; # Default store id is 1
+	            $routeParams['_store'] = $r->getStoreId();
+	            $routeParams['_nosid'] = True;
+	            $url = Mage::getUrl($routePath, $routeParams);
+	            $urls[] = $url;
+	        }
+	    }
 
         return $urls;
     }
@@ -292,4 +295,3 @@ class Byte_Hypernode_Model_Observer {
         }
     }
 }
-

@@ -3,7 +3,7 @@
     <modules>
         <Byte_Hypernode>
             <active>true</active>
-            <codePool>community</codePool>
+            <codePool>local</codePool>
             <depends>
                 <Mage_Adminhtml />
             </depends>

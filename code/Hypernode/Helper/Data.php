@@ -62,7 +62,7 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
     $urls = Array();
 
     foreach ($collection as $store) {
-        $urls[] = $store->getBaseUrl() . ".*";
+        $urls[] = "http://" . parse_url($store->getBaseUrl(), PHP_URL_HOST) . "/.*";
 
         # Sometimes we see multiple storefronts with the same frontend URL. We do not need to flush those URLs twice. So uniq and sort.
         $urls = array_values(array_unique($urls));

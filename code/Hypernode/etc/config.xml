@@ -73,7 +73,7 @@
                     <hypernode>
                         <type>singleton</type>
                         <class>hypernode/observer</class>
-                        <method>flushHypernode</method>
+                        <method>purgeCache</method>
                     </hypernode>
                 </observers>
 			</admin_system_config_section_save_after>
@@ -115,12 +115,9 @@
 customer
 moneybookers
 paypal
-admin
+adminhtml
 wishlist</exclude>
             </routes>
-<!--			<cache_time>
-				<ttl>14400</ttl>
-			</cache_time> -->
         </hypernode>
     </default>
 

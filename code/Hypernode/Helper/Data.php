@@ -71,30 +71,6 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
         return $hypernodeServers;
     }
 
-	/* Purge Varnish Cache */
-	public function purgeVarnish()
-	{
-
-		// Get the current baseUrl
-		$baseUrl = parse_url(  Mage::getBaseUrl() );
-
-		// Here we use Curl to call Varnish to purge
-		// the given host data.
-        $ch = curl_init();
-        curl_setopt($ch,CURLOPT_URL, 'http://127.0.0.1/.*');
-		curl_setopt($ch,CURLOPT_HTTPHEADER, array('Host: ' . $baseUrl['host']));
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch,CURLOPT_CUSTOMREQUEST, 'PURGE');
-		$result = curl_exec($ch);
-        curl_close($ch);
-		if ($result) {
-			return true;
-		} else {	
-			return false;
-		}
-	}
-
     /**
      * Purges all cache on all Hypernode servers.
      * 
@@ -106,7 +82,8 @@ class Byte_Hypernode_Helper_Data extends Mage_Core_Helper_Abstract
 	    $urls = Array();
 
 	    foreach ($collection as $store) {
-	        $urls[] = $store->getBaseUrl() . ".*";
+
+			$urls[] = "http://" . parse_url($store->getBaseUrl(), PHP_URL_HOST) . "/.*";
 
 	        # Sometimes we see multiple storefronts with the same frontend URL. We do not need to flush those URLs twice. So uniq and sort.
 	        $urls = array_values(array_unique($urls));

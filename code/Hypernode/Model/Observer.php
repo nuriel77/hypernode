@@ -43,11 +43,9 @@ class Byte_Hypernode_Model_Observer {
         }
 
         // Is this an admin page? Or is it a login action? Or is it a checkout action?
-		// -> Added note: Checkout and Adminarea don't cache by default
-  //   if ($helper->isAdminArea() || $helper->isLoginAction() || $helper->isCheckoutPage()) {
-       if ( $helper->isLoginAction()) {
+  	    if ($helper->isAdminArea() || $helper->isLoginAction() || $helper->isCheckoutPage()) {
 			$helper->setUncached();
-       }
+        }
 	
        /*
         * We don't want pages cached when:
@@ -94,19 +92,6 @@ class Byte_Hypernode_Model_Observer {
         return $this;
     }
 
-	/*
-	 *	Sends a signal to Varnish to flush cache
- 	 */
-	public function flushHypernode($observer)
-	{
-		// If Hypernode is not enabled on admin don't do anything
-        if (!Mage::app()->useCache('hypernode')) {
-            return;
-        }
-		if ( Mage::helper('hypernode')->purgeVarnish() ){
-			Mage::getSingleton('adminhtml/session')->addSuccess("The Hypernode/Varnish cache has been purged.");
-		}
-	}
 
     /**
      * Listens to application_clean_cache event and gets notified when a product/category/cms 

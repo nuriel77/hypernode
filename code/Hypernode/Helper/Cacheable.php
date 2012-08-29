@@ -215,7 +215,7 @@ class Byte_Hypernode_Helper_Cacheable extends Mage_Core_Helper_Abstract
 	public function isExcludedRoute()
 	{
         // Get the current route
-        $myroute    = Mage::app()->getRequest()->getControllerName();
+        $myroute    = Mage::app()->getRequest()->getRouteName();
 
         // Get the excluded routes provided by the user
         $myhelper   = Mage::helper(self::HYPERNODE_DATA);
